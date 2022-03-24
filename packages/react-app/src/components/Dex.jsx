@@ -154,7 +154,7 @@ export default function Dex(props) {
         <Row span={12}>
           <Contract
             name="Balloons"
-            signer={props.userSigner}
+            signer={props.signer}
             price = {props.price}
             provider={props.localProvider}
             show={["balanceOf", "approve"]}

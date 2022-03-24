@@ -11,6 +11,11 @@ contract DEX {
   using SafeMath for uint256;
   IERC20 token;
 
+  event EthToToken(address _buyer, uint256 _tokensBought);
+  event TokenToEth(address _buyer, uint256 _ethBought);
+  event Deposit(address _deposit, uint256 _liquidityMinted);
+  event Withdraw(address _withdrawer, uint256 _tokensWithdrawn, uint256 ethWithdrawn);
+
   constructor(address _tokenAddress) {
     token = IERC20(_tokenAddress);
   }
@@ -42,6 +47,7 @@ contract DEX {
     uint256 _tokenReserve = token.balanceOf(address(this));
     uint256 _tokensBought = price(msg.value, address(this).balance.sub(msg.value), _tokenReserve);
     require(token.transfer(msg.sender, _tokensBought));
+    emit EthToToken(msg.sender, _tokensBought);
     return _tokensBought;
   }
 
@@ -50,6 +56,7 @@ contract DEX {
     uint256 _ethBought = price(_tokens, _tokenReserve, address(this).balance);
     payable(msg.sender).transfer(_ethBought);
     require(token.transferFrom(msg.sender, address(this), _tokens));
+    emit TokenToEth(msg.sender, _ethBought);
     return _ethBought;
   }
 
@@ -61,6 +68,7 @@ contract DEX {
     liquidity[msg.sender] = liquidity[msg.sender].add(_liquidityMinted);
     totalLiquidity = totalLiquidity.add(_liquidityMinted);
     require(token.transferFrom(msg.sender, address(this), _tokenAmount));
+    emit Deposit(msg.sender, _liquidityMinted);
     return _liquidityMinted;
   }
 
@@ -71,6 +79,7 @@ contract DEX {
     liquidity[msg.sender] = liquidity[msg.sender].sub(_ethAmount);
     payable(msg.sender).transfer(_ethAmount);
     require(token.transfer(msg.sender, _tokenAmount));
+    emit Withdraw(msg.sender, _tokenAmount, _ethAmount);
     return (_ethAmount, _tokenAmount);
   }
 

@@ -48,7 +48,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   //  Transfer approved tokens
   console.log("Transferring BLNS to Dex");
-  await DEX.init(ethers.utils.parseEther('5'), {value: ethers.utils.parseEther('5')});
+  await DEX.init(ethers.utils.parseEther('0.1'), {value: ethers.utils.parseEther('0.1')});
 
   /*  await YourContract.setPurpose("Hello");
   
